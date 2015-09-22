@@ -36,7 +36,7 @@ func TestGetHome(t *testing.T) {
 		m.ServeHTTP(response, request)
 		res := GetHome(w, &r)
 		Convey("Then it should return a valid message", func() {
-			So(res, ShouldEqual, "Hello world")
+			So(res, ShouldEqual, "One single tool to rule them all")
 		})
 	})
 }

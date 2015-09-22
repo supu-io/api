@@ -6,12 +6,19 @@ import (
 	"time"
 )
 
+// Get a "Home page"
 func GetHome(w http.ResponseWriter, r *http.Request) string {
-	return "Hello world"
+	return "One single tool to rule them all"
 }
 
+// Get a list of issues by its status
+// Status param is required
 func GetIssues(params martini.Params) string {
-	body := []byte("{\"status\":\"" + params["status"] + "\"}")
+	status := params["status"]
+	if false == isValidStatus(status) {
+		return getError("Invalid status")
+	}
+	body := []byte("{\"status\":\"" + status + "\"}")
 	issues, err := nc.Request("issues.list", body, 10*time.Millisecond)
 	if err != nil {
 		return "error"
@@ -20,6 +27,7 @@ func GetIssues(params martini.Params) string {
 	return string(issues.Data)
 }
 
+// Get am Issue details
 func GetIssue(params martini.Params) string {
 	body := []byte("{\"issue\":\"" + params["issue"] + "\"}")
 	issues, err := nc.Request("issues.details", body, 10*time.Millisecond)
@@ -30,6 +38,7 @@ func GetIssue(params martini.Params) string {
 	return string(issues.Data)
 }
 
+// Update Issue status
 func UpdateIssue(r *http.Request, params martini.Params) string {
 	status := r.FormValue("status")
 	if false == isValidStatus(status) {
@@ -45,10 +54,12 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 	return string(issues.Data)
 }
 
+// Returns a standard error message with the given body
 func getError(body string) string {
 	return "{\"error\":\"" + body + "\"}"
 }
 
+// Checks if the given status is valid or not
 func isValidStatus(status string) bool {
 	if status == "todo" || status == "uat" || status == "doing" || status == "done" || status == "review" {
 		return true

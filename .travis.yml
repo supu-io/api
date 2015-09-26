@@ -1,0 +1,13 @@
+language: go
+before_script:
+  - go get -u github.com/nats-io/gnatsd
+  - gnats="$GOPATH/bin/gnatsd"
+  - $gnats &
+services:
+  - redis-server
+go:
+ - 1.1
+ - 1.2
+ - tip
+install: make deps && make dev-deps
+script: make test

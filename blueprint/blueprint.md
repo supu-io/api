@@ -24,7 +24,7 @@ Reply with the current API version.
         0.0.0
 
 # Group Issues
-Resources related to talks in the API.
+Resources related to issues in the API.
 
 ## Issues [/issues]
 

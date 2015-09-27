@@ -26,7 +26,9 @@ Reply with the current API version.
 # Group Issues
 Resources related to talks in the API.
 
-## Issues [/talks]
+## Issues [/issues]
+
+List issues.
 
 + Model (application/json)
 
@@ -36,7 +38,13 @@ Resources related to talks in the API.
     }
     ```
 
-### List issues [GET]
+### All issues [GET]
+
++ Response 200
+
+    [Issues][]
+
+### Create an issue [POST]
 
 + Response 200
 
@@ -46,8 +54,25 @@ Resources related to talks in the API.
 
 Get an issue by its ID.
 
-
 ### Get an issue [GET]
+
++ Response 200
+
+    [Issues][]
+
+### Update an issue [PUT]
+
++ Response 200
+
+### Delete an issue [DELETE]
+
++ Response 200
+
+## Search issues [/issues/search]
+
+Search issues.
+
+### Search issues [GET]
 
 + Response 200
 

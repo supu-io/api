@@ -10,4 +10,6 @@ go:
  - 1.2
  - tip
 install: make deps && make dev-deps
-script: make test
+script:
+    - make lint
+    - make test

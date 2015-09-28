@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/go-martini/martini"
+	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -13,15 +16,20 @@ func GetHome(w http.ResponseWriter, r *http.Request) string {
 
 // Get a list of issues by its status
 // Status param is required
-func GetIssues(params martini.Params) string {
-	status := params["status"]
+func GetIssues(r *http.Request, params martini.Params) string {
+	status := r.URL.Query().Get("status")
 	if false == isValidStatus(status) {
 		return getError("Invalid status")
 	}
-	body := []byte("{\"status\":\"" + status + "\"}")
-	issues, err := nc.Request("issues.list", body, 10*time.Millisecond)
+	config := getConfig()
+	msg := IssuesList{
+		Status: status,
+		Org:    "supu-io",
+		Config: config,
+	}
+	issues, err := nc.Request("issues.list", msg.toJSON(), 10000*time.Millisecond)
 	if err != nil {
-		return "error"
+		return "{\"error\":\"" + err.Error() + "\"}"
 	}
 
 	return string(issues.Data)
@@ -32,7 +40,7 @@ func GetIssue(params martini.Params) string {
 	body := []byte("{\"issue\":\"" + params["issue"] + "\"}")
 	issues, err := nc.Request("issues.details", body, 10*time.Millisecond)
 	if err != nil {
-		return "error"
+		return "{\"error\":\"" + err.Error() + "\"}"
 	}
 
 	return string(issues.Data)
@@ -48,7 +56,7 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 	body := []byte("{\"issue\":\"" + params["issue"] + "\", \"status\":\"" + status + "\"}")
 	issues, err := nc.Request("issues.details", body, 10*time.Millisecond)
 	if err != nil {
-		return "error: " + err.Error()
+		return "{\"error\":\"" + err.Error() + "\"}"
 	}
 
 	return string(issues.Data)
@@ -65,4 +73,19 @@ func isValidStatus(status string) bool {
 		return true
 	}
 	return false
+}
+
+func getConfig() *Config {
+	c := Config{}
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Panic("error:", err)
+	}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&c)
+	if err != nil {
+		log.Println("Config file is invalid")
+		log.Panic("error:", err)
+	}
+	return &c
 }

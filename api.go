@@ -2,19 +2,20 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/go-martini/martini"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/go-martini/martini"
 )
 
-// Get a "Home page"
+// GetHome is the / route and gets a "Home page"
 func GetHome(w http.ResponseWriter, r *http.Request) string {
 	return "One single tool to rule them all"
 }
 
-// Get a list of issues by its status
+// GetIssues is the /issues and get a list of Issues by its status
 // Status param is required
 func GetIssues(r *http.Request, params martini.Params) string {
 	status := r.URL.Query().Get("status")
@@ -35,7 +36,7 @@ func GetIssues(r *http.Request, params martini.Params) string {
 	return string(issues.Data)
 }
 
-// Get am Issue details
+// GetIssue is the /issue/:issue and gets am Issue details
 func GetIssue(params martini.Params) string {
 	body := []byte("{\"issue\":\"" + params["issue"] + "\"}")
 	issues, err := nc.Request("issues.details", body, 10*time.Millisecond)
@@ -46,7 +47,7 @@ func GetIssue(params martini.Params) string {
 	return string(issues.Data)
 }
 
-// Update Issue status
+// UpdateIssue is the PUT /issue/:issue and updates an Issue status
 func UpdateIssue(r *http.Request, params martini.Params) string {
 	status := r.FormValue("status")
 	if false == isValidStatus(status) {

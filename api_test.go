@@ -2,11 +2,12 @@ package main
 
 import (
 	"bytes"
-	"github.com/nats-io/nats"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/nats-io/nats"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

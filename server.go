@@ -15,8 +15,8 @@ func setupRouter() *martini.ClassicMartini {
 
 	m.Get("/", GetHome)
 	m.Get("/issues", GetIssues)
-	m.Get("/issues/:issue", GetIssue)
 	m.Get("/issues/search", GetIssues)
+	m.Get("/issues/:issue", GetIssue)
 	m.Put("/issues/:issue", UpdateIssue)
 
 	return m

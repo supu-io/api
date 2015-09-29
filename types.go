@@ -27,3 +27,16 @@ func (i *IssuesList) toJSON() []byte {
 	}
 	return json
 }
+
+type IssueDetails struct {
+	ID      string `json:"id"`
+	*Config `json:"config"`
+}
+
+func (i *IssueDetails) toJSON() []byte {
+	json, err := json.Marshal(i)
+	if err != nil {
+		log.Println(err)
+	}
+	return json
+}

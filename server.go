@@ -17,6 +17,7 @@ func setupRouter() *martini.ClassicMartini {
 	m.Get("/issues", GetIssues)
 	m.Get("/issues/search", GetIssues)
 	m.Get("/issues/:issue", GetIssue)
+	m.Get("/issues/:owner/:repo/:issue", GetIssue)
 	m.Put("/issues/:issue", UpdateIssue)
 
 	return m

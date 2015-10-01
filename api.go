@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/go-martini/martini"
@@ -19,8 +20,9 @@ func GetHome(w http.ResponseWriter, r *http.Request) string {
 // Status param is required
 func GetIssues(r *http.Request, params martini.Params) string {
 	status := r.URL.Query().Get("status")
-	if false == isValidStatus(status) {
-		return getError("Invalid status")
+	if valid, statuses := isValidStatus(status); valid == false {
+		st := strings.Join(statuses, ", ")
+		return getError("Invalid status, valid statuses: " + st)
 	}
 	config := getConfig()
 	msg := IssuesList{
@@ -28,6 +30,7 @@ func GetIssues(r *http.Request, params martini.Params) string {
 		Org:    "supu-io",
 		Config: config,
 	}
+
 	issues, err := nc.Request("issues.list", msg.toJSON(), 10000*time.Millisecond)
 	if err != nil {
 		return "{\"error\":\"" + err.Error() + "\"}"
@@ -58,13 +61,17 @@ func GetIssue(params martini.Params) string {
 
 // UpdateIssue is the PUT /issue/:issue and updates an Issue status
 func UpdateIssue(r *http.Request, params martini.Params) string {
-	status := r.FormValue("status")
-	if false == isValidStatus(status) {
-		return getError("Invalid status")
+	decoder := json.NewDecoder(r.Body)
+	var t UpdateAttr
+	err := decoder.Decode(&t)
+	status := t.Status
+	if valid, statuses := isValidStatus(status); valid == false {
+		st := strings.Join(statuses, ", ")
+		return getError("Invalid status, valid statuses: " + st)
 	}
 
 	body := []byte("{\"issue\":\"" + params["issue"] + "\", \"status\":\"" + status + "\"}")
-	issues, err := nc.Request("issues.details", body, 10*time.Millisecond)
+	issues, err := nc.Request("workflow.move", body, 10000*time.Millisecond)
 	if err != nil {
 		return "{\"error\":\"" + err.Error() + "\"}"
 	}
@@ -77,12 +84,49 @@ func getError(body string) string {
 	return "{\"error\":\"" + body + "\"}"
 }
 
-// Checks if the given status is valid or not
-func isValidStatus(status string) bool {
-	if status == "todo" || status == "uat" || status == "doing" || status == "done" || status == "review" {
-		return true
+func GetStatuses(r *http.Request, params martini.Params) string {
+	err, statuses := getStatuses()
+	if err != nil {
+		log.Println(err)
+		return "{\"error\":\"Internal error\"}"
 	}
-	return false
+	json, err := json.Marshal(statuses)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return string(json)
+}
+
+func getStatuses() (error, []string) {
+	body := "{\"issue\":{\"id\":\"\",\"status\":\"\"}}"
+	res, err := nc.Request("workflow.states.all", []byte(body), 10000*time.Millisecond)
+	if err != nil {
+		return err, []string{}
+	}
+
+	statuses := []string{}
+	err = json.Unmarshal(res.Data, &statuses)
+	if err != nil {
+		return err, []string{}
+	}
+
+	return err, statuses
+}
+
+// Checks if the given status is valid or not
+func isValidStatus(status string) (bool, []string) {
+	err, statuses := getStatuses()
+	if err != nil {
+		return false, statuses
+	}
+	sw := false
+	for _, s := range statuses {
+		if string(s) == status {
+			sw = true
+		}
+	}
+	return sw, statuses
 }
 
 func getConfig() *Config {

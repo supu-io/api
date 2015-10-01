@@ -40,3 +40,7 @@ func (i *IssueDetails) toJSON() []byte {
 	}
 	return json
 }
+
+type UpdateAttr struct {
+	Status string `json:"status"`
+}

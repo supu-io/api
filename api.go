@@ -87,12 +87,12 @@ func getError(body string) string {
 func GetStatuses(r *http.Request, params martini.Params) string {
 	err, statuses := getStatuses()
 	if err != nil {
-		log.Println(err)
 		return "{\"error\":\"Internal error\"}"
 	}
 	json, err := json.Marshal(statuses)
 	if err != nil {
 		log.Println(err)
+		return "{\"error\":\"Internal error\"}"
 	}
 
 	return string(json)

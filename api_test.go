@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/nats-io/nats"
@@ -23,6 +22,7 @@ func setup() {
 
 func subscribe(subject string, respond string) {
 	sub, _ := nc.Subscribe(subject, func(m *nats.Msg) {
+		println(respond)
 		nc.Publish(m.Reply, []byte(respond))
 	})
 	sub.AutoUnsubscribe(1)
@@ -44,10 +44,9 @@ func TestGetHome(t *testing.T) {
 
 func updateIssueStatus(id string, status string) *httptest.ResponseRecorder {
 	m := setupRouter()
-	data := url.Values{}
-	data.Set("status", status)
 
-	request, _ := http.NewRequest("PUT", "/issues/1", bytes.NewBufferString(data.Encode()))
+	var jsonStr = []byte(`{"status":"` + status + `"}`)
+	request, _ := http.NewRequest("PUT", "/issues/1", bytes.NewBuffer(jsonStr))
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	response := httptest.NewRecorder()
 	m.ServeHTTP(response, request)
@@ -59,7 +58,9 @@ func TestUpdateIssue(t *testing.T) {
 	setup()
 
 	Convey("When I update an issue with valid status", t, func() {
-		subscribe("issues.details", "update test")
+		subscribe("workflow.states.all", `["doing","todo"]`)
+		subscribe("workflow.move", `update test`)
+		// go subscribe("issues.details", "update test")
 		response := updateIssueStatus("1", "todo")
 		Convey("Then it should return a valid message", func() {
 			So(response.Body.String(), ShouldEqual, "update test")
@@ -67,9 +68,11 @@ func TestUpdateIssue(t *testing.T) {
 	})
 
 	Convey("When I update an issue with an invalid status", t, func() {
+		subscribe("workflow.states.all", `["doing","todo"]`)
+		subscribe("workflow.move", `update test`)
 		response := updateIssueStatus("1", "foo")
 		Convey("Then it should return an error", func() {
-			So(response.Body.String(), ShouldEqual, "{\"error\":\"Invalid status\"}")
+			So(response.Body.String(), ShouldEqual, "{\"error\":\"Invalid status, valid statuses: doing, todo\"}")
 		})
 	})
 }

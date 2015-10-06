@@ -23,8 +23,8 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 	log.Println("....x.")
 
 	// TODO: Hardcoded!!!!
-	original_status := "todo"
-	body := []byte(`{"issue":{"id":"` + params["issue"] + `", "status":"` + original_status + `"},"state":"` + status + `"}`)
+	originalStatus := "todo"
+	body := []byte(`{"issue":{"id":"` + params["issue"] + `", "status":"` + originalStatus + `"},"state":"` + status + `"}`)
 	log.Println("....y.")
 	issues, err := nc.Request("workflow.move", body, 10000*time.Millisecond)
 	log.Println("....y.")

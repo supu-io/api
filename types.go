@@ -5,14 +5,17 @@ import (
 	"log"
 )
 
+// Github configuration structure
 type Github struct {
 	Token string `json:"token"`
 }
 
+// Config structure
 type Config struct {
 	Github `json:"github"`
 }
 
+// IssuesList list of issues
 type IssuesList struct {
 	Status  string `json:"status"`
 	Org     string `json:"org, omitempty"`
@@ -20,6 +23,7 @@ type IssuesList struct {
 	*Config `json:"config"`
 }
 
+// Convert issues list to a json string
 func (i *IssuesList) toJSON() []byte {
 	json, err := json.Marshal(i)
 	if err != nil {
@@ -28,11 +32,13 @@ func (i *IssuesList) toJSON() []byte {
 	return json
 }
 
+// IssueDetails represntation of a issue
 type IssueDetails struct {
 	ID      string `json:"id"`
 	*Config `json:"config"`
 }
 
+// Convert issue to a json string
 func (i *IssueDetails) toJSON() []byte {
 	json, err := json.Marshal(i)
 	if err != nil {
@@ -41,6 +47,7 @@ func (i *IssueDetails) toJSON() []byte {
 	return json
 }
 
+// UpdateAttr json to update an issue
 type UpdateAttr struct {
 	Status string `json:"status"`
 }

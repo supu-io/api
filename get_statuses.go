@@ -9,8 +9,9 @@ import (
 	"github.com/go-martini/martini"
 )
 
+// GetStatuses get all statuses for the issue workflow
 func GetStatuses(r *http.Request, params martini.Params) string {
-	err, statuses := getStatuses()
+	statuses, err := getStatuses()
 	if err != nil {
 		return "{\"error\":\"Internal error\"}"
 	}
@@ -23,25 +24,25 @@ func GetStatuses(r *http.Request, params martini.Params) string {
 	return string(json)
 }
 
-func getStatuses() (error, []string) {
+func getStatuses() ([]string, error) {
 	body := "{\"issue\":{\"id\":\"\",\"status\":\"\"}}"
 	res, err := nc.Request("workflow.states.all", []byte(body), 10000*time.Millisecond)
 	if err != nil {
-		return err, []string{}
+		return []string{}, err
 	}
 
 	statuses := []string{}
 	err = json.Unmarshal(res.Data, &statuses)
 	if err != nil {
-		return err, []string{}
+		return []string{}, err
 	}
 
-	return err, statuses
+	return statuses, err
 }
 
 // Checks if the given status is valid or not
 func isValidStatus(status string) (bool, []string) {
-	err, statuses := getStatuses()
+	statuses, err := getStatuses()
 	if err != nil {
 		return false, statuses
 	}

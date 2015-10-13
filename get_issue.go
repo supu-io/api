@@ -13,6 +13,11 @@ func GetIssue(params martini.Params) string {
 		issue = owner + "/" + params["repo"] + "/" + params["issue"]
 	}
 
+	return getIssueDetails(issue)
+
+}
+
+func getIssueDetails(issue string) string {
 	config := getConfig()
 	msg := IssueDetails{
 		ID:     issue,

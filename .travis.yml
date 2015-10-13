@@ -11,7 +11,9 @@ go:
  - 1.4
  - 1.5
  - tip
-install: make deps && make dev-deps
+install: 
+    - make deps && make dev-deps
+    - cp config.json.tpl config.json
 script:
     - make lint
     - make test

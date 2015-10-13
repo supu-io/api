@@ -10,10 +10,13 @@ import (
 	"github.com/go-martini/martini"
 )
 
+// UpdateIssueType ...
 type UpdateIssueType struct {
 	ID     string `json:"id"`
 	Status string `json:"status"`
 }
+
+// UpdateIssueMsg ...
 type UpdateIssueMsg struct {
 	Issue   UpdateIssueType `json:"issue"`
 	*Config `json:"config"`

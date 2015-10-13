@@ -60,7 +60,7 @@ func TestUpdateIssue(t *testing.T) {
 	Convey("When I update an issue with valid status", t, func() {
 		subscribe("workflow.states.all", `["doing","todo"]`)
 		subscribe("workflow.move", `update test`)
-		// go subscribe("issues.details", "update test")
+		go subscribe("issues.details", "update test")
 		response := updateIssueStatus("1", "todo")
 		Convey("Then it should return a valid message", func() {
 			So(response.Body.String(), ShouldEqual, "update test")

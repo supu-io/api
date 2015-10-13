@@ -15,9 +15,11 @@ func GetIssues(r *http.Request, params martini.Params) string {
 	org := r.URL.Query().Get("org")
 	repo := r.URL.Query().Get("repo")
 
-	if valid, statuses := isValidStatus(status); valid == false {
-		st := strings.Join(statuses, ", ")
-		return getError("Invalid status, valid statuses: " + st)
+	if status != "" {
+		if valid, statuses := isValidStatus(status); valid == false {
+			st := strings.Join(statuses, ", ")
+			return getError("Invalid status, valid statuses: " + st)
+		}
 	}
 	config := getConfig()
 	msg := IssuesList{

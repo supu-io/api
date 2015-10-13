@@ -12,6 +12,9 @@ import (
 // Status param is required
 func GetIssues(r *http.Request, params martini.Params) string {
 	status := r.URL.Query().Get("status")
+	org := r.URL.Query().Get("org")
+	repo := r.URL.Query().Get("repo")
+
 	if valid, statuses := isValidStatus(status); valid == false {
 		st := strings.Join(statuses, ", ")
 		return getError("Invalid status, valid statuses: " + st)
@@ -19,7 +22,8 @@ func GetIssues(r *http.Request, params martini.Params) string {
 	config := getConfig()
 	msg := IssuesList{
 		Status: status,
-		Org:    "supu-io",
+		Repo:   repo,
+		Org:    org,
 		Config: config,
 	}
 

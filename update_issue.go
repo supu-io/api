@@ -45,7 +45,7 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 
 	fullID := params["issue"]
 	if params["owner"] != "" && params["repo"] != "" {
-		fullID = "/" + params["owner"] + "/" + params["repo"] + "/" + params["issue"]
+		fullID = params["owner"] + "/" + params["repo"] + "/" + params["issue"]
 	}
 
 	// TODO : Get issue current status

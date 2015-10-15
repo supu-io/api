@@ -3,13 +3,12 @@ package main
 import (
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/go-martini/martini"
+	"github.com/supu-io/messages"
 )
 
 // GetIssues is the /issues and get a list of Issues by its status
-// Status param is required
 func GetIssues(r *http.Request, params martini.Params) string {
 	status := r.URL.Query().Get("status")
 	org := r.URL.Query().Get("org")
@@ -21,18 +20,15 @@ func GetIssues(r *http.Request, params martini.Params) string {
 			return getError("Invalid status, valid statuses: " + st)
 		}
 	}
-	config := getConfig()
-	msg := IssuesList{
+
+	msg := messages.GetIssuesList{
 		Status: status,
 		Repo:   repo,
 		Org:    org,
-		Config: config,
+		Config: config(),
 	}
 
-	issues, err := nc.Request("issues.list", msg.toJSON(), 10000*time.Millisecond)
-	if err != nil {
-		return "{\"error\":\"" + err.Error() + "\"}"
-	}
+	response := Request("issues.list", msg)
 
-	return string(issues.Data)
+	return response
 }

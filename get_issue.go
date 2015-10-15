@@ -15,7 +15,7 @@ func GetIssue(params martini.Params) string {
 	}
 
 	msg := messages.GetIssue{
-		Issue: messages.Issue{
+		Issue: &messages.Issue{
 			ID:     params["issue"],
 			Number: number,
 			Org:    params["owner"],

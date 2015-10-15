@@ -9,6 +9,7 @@ import (
 	"github.com/go-martini/martini"
 )
 
+// CreateIssueType ...
 type CreateIssueType struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
@@ -16,6 +17,7 @@ type CreateIssueType struct {
 	Repo  string `json:"repo"`
 }
 
+// CreateIssueMsg ...
 type CreateIssueMsg struct {
 	Issue   CreateIssueType `json:"issue"`
 	*Config `json:"config"`

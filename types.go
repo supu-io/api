@@ -32,21 +32,6 @@ func (i *IssuesList) toJSON() []byte {
 	return json
 }
 
-// IssueDetails represntation of a issue
-type IssueDetails struct {
-	ID      string `json:"id"`
-	*Config `json:"config"`
-}
-
-// Convert issue to a json string
-func (i *IssueDetails) toJSON() []byte {
-	json, err := json.Marshal(i)
-	if err != nil {
-		log.Println(err)
-	}
-	return json
-}
-
 // UpdateAttr json to update an issue
 type UpdateAttr struct {
 	Status string `json:"status"`

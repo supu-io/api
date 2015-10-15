@@ -49,7 +49,7 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 	}
 
 	// TODO : Get issue current status
-	data := getIssueDetails(fullID)
+	data := GetIssue(params)
 	type tmp struct {
 		Status string `json:"status"`
 	}

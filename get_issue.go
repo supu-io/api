@@ -1,32 +1,29 @@
 package main
 
 import (
-	"time"
+	"strconv"
 
 	"github.com/go-martini/martini"
+	"github.com/supu-io/messages"
 )
 
 // GetIssue is the /issue/:issue and gets am Issue details
 func GetIssue(params martini.Params) string {
-	issue := params["issue"]
-	if owner, ok := params["owner"]; ok {
-		issue = owner + "/" + params["repo"] + "/" + params["issue"]
-	}
-
-	return getIssueDetails(issue)
-
-}
-
-func getIssueDetails(issue string) string {
-	config := getConfig()
-	msg := IssueDetails{
-		ID:     issue,
-		Config: config,
-	}
-	issues, err := nc.Request("issues.details", msg.toJSON(), 10000*time.Millisecond)
+	number, err := strconv.Atoi(params["issue"])
 	if err != nil {
-		return "{\"error\":\"" + err.Error() + "\"}"
+		return GenerateErrorMessage(err)
 	}
 
-	return string(issues.Data)
+	msg := messages.GetIssue{
+		Issue: messages.Issue{
+			ID:     params["issue"],
+			Number: number,
+			Org:    params["owner"],
+			Repo:   params["repo"],
+		},
+		Config: config(),
+	}
+	response := Request("issues.details", msg)
+
+	return response
 }

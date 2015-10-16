@@ -17,7 +17,7 @@ func GetIssues(r *http.Request, params martini.Params) string {
 	if status != "" {
 		if valid, statuses := isValidStatus(status); valid == false {
 			st := strings.Join(statuses, ", ")
-			return getError("Invalid status, valid statuses: " + st)
+			return GetErrorMessage("Invalid status, valid statuses: " + st)
 		}
 	}
 

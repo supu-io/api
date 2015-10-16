@@ -16,10 +16,16 @@ func ToJSON(i interface{}) []byte {
 	return json
 }
 
-// GenerateErrorMessage : Generates an error message to be
+// GenerateErrorMessage : Generates an error message from an error
 // sent through an api response
 func GenerateErrorMessage(err error) string {
-	return "{\"error\":\"" + err.Error() + "\"}"
+	return GetErrorMessage(err.Error())
+}
+
+// GetErrorMessage : Generates an error message from a string
+// sent through an api response
+func GetErrorMessage(err string) string {
+	return "{\"error\":\"" + err + "\"}"
 }
 
 // Request : does a nats request over the given subject and

@@ -2,45 +2,28 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+	"strconv"
 	"strings"
-	"time"
 
 	"github.com/go-martini/martini"
+	"github.com/supu-io/messages"
 )
 
-// UpdateIssueType ...
-type UpdateIssueType struct {
-	ID     string `json:"id"`
+// UpdateAttr json to update an issue
+type UpdateAttr struct {
 	Status string `json:"status"`
-}
-
-// UpdateIssueMsg ...
-type UpdateIssueMsg struct {
-	Issue   UpdateIssueType `json:"issue"`
-	*Config `json:"config"`
-	State   string `json:"state"`
-}
-
-func (i *UpdateIssueMsg) toJSON() []byte {
-	json, err := json.Marshal(i)
-	if err != nil {
-		log.Println(err)
-	}
-	return json
-
 }
 
 // UpdateIssue is the PUT /issue/:issue and updates an Issue status
 func UpdateIssue(r *http.Request, params martini.Params) string {
 	decoder := json.NewDecoder(r.Body)
 	var t UpdateAttr
-	err := decoder.Decode(&t)
+	decoder.Decode(&t)
 	status := t.Status
 	if valid, statuses := isValidStatus(status); valid == false {
 		st := strings.Join(statuses, ", ")
-		return getError("Invalid status, valid statuses: " + st)
+		return GetErrorMessage("Invalid status, valid statuses: " + st)
 	}
 
 	fullID := params["issue"]
@@ -48,7 +31,25 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 		fullID = params["owner"] + "/" + params["repo"] + "/" + params["issue"]
 	}
 
-	// TODO : Get issue current status
+	number, _ := strconv.Atoi(params["issue"])
+
+	msg := messages.UpdateIssue{
+		Issue: &messages.Issue{
+			ID:     fullID,
+			Number: number,
+			Repo:   params["repo"],
+			Org:    params["owner"],
+			Status: issueCurrentStatus(params),
+		},
+		Status: status,
+		Config: config(),
+	}
+
+	return Request("workflow.move", msg)
+}
+
+// Get the issue current status
+func issueCurrentStatus(params martini.Params) string {
 	data := GetIssue(params)
 	type tmp struct {
 		Status string `json:"status"`
@@ -56,19 +57,5 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 	details := tmp{}
 	json.Unmarshal([]byte(data), &details)
 
-	msg := UpdateIssueMsg{
-		Issue: UpdateIssueType{
-			ID:     fullID,
-			Status: details.Status,
-		},
-		State:  status,
-		Config: getConfig(),
-	}
-	issues, err := nc.Request("workflow.move", msg.toJSON(), 10000*time.Millisecond)
-	if err != nil {
-		return "{\"error\":\"" + err.Error() + "\"}"
-	}
-	log.Println(string(issues.Data))
-
-	return string(issues.Data)
+	return details.Status
 }

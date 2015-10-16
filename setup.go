@@ -9,7 +9,6 @@ import (
 
 // Setup the necessary tools to start using supu
 func Setup(r *http.Request, params martini.Params) string {
-
 	states, err := getStatuses()
 	if err != nil {
 		return "{\"error\":\"" + err.Error() + "\"}"

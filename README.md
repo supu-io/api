@@ -31,27 +31,6 @@ $ make test
 Please check the whole Project Documentation repo at:
 [supu.io documentation](https://github.com/supu-io/docs)
 
-
-### GET /issues/:issue
-
-Get an issue details for the given issue id
-
-### GET /issues
-
-Get a list of issues. This payload accepts filters:
-- status: The current status of the issue [todo, doing, review, uat, done]
-
-### PUT /issues/:issue
-
-Updates an issue with the corresponding status
-
-Payload
-```
-- { "status":"new_status"}
-```
-
-Allowed statuses are: doing, uat, review, done, todo
-
 ## Build status
 
 * Branch Master : [![Build Status Master](https://travis-ci.org/supu-io/api.svg?branch=master)](https://travis-ci.org/supu-io/api)

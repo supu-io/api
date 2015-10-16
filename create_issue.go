@@ -18,6 +18,7 @@ type CreateAttr struct {
 
 // CreateIssue is the POST /issue/:issue and updates an Issue status
 func CreateIssue(r *http.Request, params martini.Params) string {
+	println("hal")
 	var t CreateAttr
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&t)

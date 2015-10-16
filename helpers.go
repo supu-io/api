@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"os"
 	"time"
+
+	"github.com/supu-io/messages"
 )
 
 // ToJSON represents an object as a json []byte
@@ -40,4 +43,19 @@ func Request(subject string, msg interface{}) string {
 	}
 
 	return string(res.Data)
+}
+
+func config() messages.Config {
+	c := messages.Config{}
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Panic("error:", err)
+	}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&c)
+	if err != nil {
+		log.Println("Config file is invalid")
+		log.Panic("error:", err)
+	}
+	return c
 }

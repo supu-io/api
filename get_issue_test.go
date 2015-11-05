@@ -26,7 +26,7 @@ func getIssueRequest(org string, repo string, issue string) *httptest.ResponseRe
 func TestGetIssue(t *testing.T) {
 	setup()
 	Convey("When I setup a repo", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("issues.details", "")
 		response := getIssueRequest("org", "repo", "1")
 		res := messages.GetIssue{}

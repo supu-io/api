@@ -25,7 +25,7 @@ func TestUpdateIssue(t *testing.T) {
 	setup()
 
 	Convey("When I update an issue with valid status", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("workflow.move", `update test`)
 		go subscribe("issues.details", "update test")
 		response := updateIssueStatus("1", "todo")
@@ -35,7 +35,7 @@ func TestUpdateIssue(t *testing.T) {
 	})
 
 	Convey("When I update an issue with an invalid status", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("workflow.move", `update test`)
 		response := updateIssueStatus("1", "foo")
 		Convey("Then it should return an error", func() {

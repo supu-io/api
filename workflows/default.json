@@ -1,0 +1,44 @@
+{
+  "transitions": [
+    {
+      "from": "created",
+      "to": "todo",
+      "hooks": []
+    },
+    {
+      "from": "todo",
+      "to": "doing",
+      "hooks": []
+    },
+    {
+      "from": "doing",
+      "to": "review",
+      "hooks": []
+    },
+    {
+      "from": "doing",
+      "to": "todo",
+      "hooks": []
+    },
+    {
+      "from": "review",
+      "to": "doing",
+      "hooks": []
+    },
+    {
+      "from": "review",
+      "to": "uat",
+      "hooks": []
+    },
+    {
+      "from": "uat",
+      "to": "doing",
+      "hooks": []
+    },
+    {
+      "from": "uat",
+      "to": "done",
+      "hooks": []
+    }
+  ]
+}

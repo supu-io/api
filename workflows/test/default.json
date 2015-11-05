@@ -1,0 +1,10 @@
+
+{
+  "transitions": [
+    {
+      "from": "doing",
+      "to": "todo",
+      "hooks": []
+    }
+  ]
+}

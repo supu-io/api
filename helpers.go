@@ -59,3 +59,22 @@ func config() messages.Config {
 	}
 	return c
 }
+
+func getWorkflow() messages.Workflow {
+	if source == "" {
+		source = "workflows/default.json"
+	}
+	file, err := os.Open(source)
+	if err != nil {
+		log.Panic("error:", err)
+	}
+	decoder := json.NewDecoder(file)
+	w := messages.Workflow{}
+	err = decoder.Decode(&w)
+	if err != nil {
+		log.Println("Workflow " + source + " not found")
+		log.Panic("error:", err)
+	}
+
+	return w
+}

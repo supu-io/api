@@ -3,42 +3,42 @@
     {
       "from": "created",
       "to": "todo",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "todo",
       "to": "doing",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "doing",
       "to": "review",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "doing",
       "to": "todo",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "review",
       "to": "doing",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "review",
       "to": "uat",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "uat",
       "to": "doing",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     },
     {
       "from": "uat",
       "to": "done",
-      "hooks": []
+      "hooks": [{ "url": "http://localhost:30001/move" }]
     }
   ]
 }

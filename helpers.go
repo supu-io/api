@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/supu-io/messages"
@@ -62,9 +63,11 @@ func config() messages.Config {
 
 func getWorkflow() messages.Workflow {
 	if source == "" {
-		source = "workflows/default.json"
+		source = "./workflows/default.json"
 	}
-	file, err := os.Open(source)
+	absPath, err := filepath.Abs(source)
+
+	file, err := os.Open(absPath)
 	if err != nil {
 		log.Panic("error:", err)
 	}

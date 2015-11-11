@@ -7,6 +7,8 @@ import (
 	"github.com/go-martini/martini"
 )
 
+var source string
+
 // GetStatuses get all statuses for the issue workflow
 func GetStatuses(r *http.Request, params martini.Params) string {
 	statuses, err := getStatuses()
@@ -23,15 +25,28 @@ func GetStatuses(r *http.Request, params martini.Params) string {
 
 // Get a list of valid statuses
 func getStatuses() ([]string, error) {
-	res := Request("workflow.states.all", "")
-
-	statuses := []string{}
-	err := json.Unmarshal([]byte(res), &statuses)
-	if err != nil {
-		return []string{}, err
+	status := []string{}
+	w := getWorkflow()
+	for _, t := range w.Transitions {
+		addFrom := true
+		addTo := true
+		for _, s := range status {
+			if s == t.To {
+				addTo = false
+			}
+			if s == t.From {
+				addFrom = false
+			}
+		}
+		if addFrom == true {
+			status = append(status, string(t.From))
+		}
+		if addTo == true {
+			status = append(status, string(t.To))
+		}
 	}
 
-	return statuses, err
+	return status, nil
 }
 
 // Checks if the given status is valid or not

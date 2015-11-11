@@ -1,0 +1,44 @@
+{
+  "transitions": [
+    {
+      "from": "created",
+      "to": "todo",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "todo",
+      "to": "doing",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "doing",
+      "to": "review",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "doing",
+      "to": "todo",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "review",
+      "to": "doing",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "review",
+      "to": "uat",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "uat",
+      "to": "doing",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    },
+    {
+      "from": "uat",
+      "to": "done",
+      "hooks": [{ "url": "http://localhost:3001/move" }]
+    }
+  ]
+}

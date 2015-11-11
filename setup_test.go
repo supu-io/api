@@ -26,7 +26,7 @@ func issueTrackerSetup(org string, repo string) *httptest.ResponseRecorder {
 func TestSetup(t *testing.T) {
 	setup()
 	Convey("When I setup a repo", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("issue-tracker.setup", "")
 		response := issueTrackerSetup("org", "repo")
 		res := messages.Setup{}

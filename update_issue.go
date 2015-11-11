@@ -33,6 +33,7 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 
 	number, _ := strconv.Atoi(params["issue"])
 
+	c := config()
 	msg := messages.UpdateIssue{
 		Issue: &messages.Issue{
 			ID:     fullID,
@@ -42,7 +43,12 @@ func UpdateIssue(r *http.Request, params martini.Params) string {
 			Status: issueCurrentStatus(params),
 		},
 		Status: status,
-		Config: config(),
+		Config: messages.Config{
+			Github: &messages.Github{
+				Token: c.Github.Token,
+			},
+		},
+		Workflow: getWorkflow(),
 	}
 
 	return Request("workflow.move", msg)

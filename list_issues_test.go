@@ -26,7 +26,7 @@ func listIssues(org string, repo string, status string) *httptest.ResponseRecord
 func TestListIssues(t *testing.T) {
 	setup()
 	Convey("When I list the issues for a repo", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("issues.list", "")
 		response := listIssues("org", "repo", "todo")
 		res := messages.GetIssuesList{}
@@ -38,7 +38,7 @@ func TestListIssues(t *testing.T) {
 		})
 	})
 	Convey("When I list the issues for a repo", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		subscribe("issues.list", "")
 		Convey("And status does not exist", func() {
 			response := listIssues("org", "repo", "foo")

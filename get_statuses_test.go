@@ -24,7 +24,7 @@ func getStatusesRequest() *httptest.ResponseRecorder {
 func TestListAllStatuses(t *testing.T) {
 	setup()
 	Convey("When I list the issues for a repo", t, func() {
-		subscribe("workflow.states.all", `["doing","todo"]`)
+		source = "workflows/test/default.json"
 		response := getStatusesRequest()
 		Convey("Then it should return a valid message", func() {
 			So(response.Body.String(), ShouldEqual, `["doing","todo"]`)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/supu-io/messages"
@@ -58,4 +59,25 @@ func config() messages.Config {
 		log.Panic("error:", err)
 	}
 	return c
+}
+
+func getWorkflow() messages.Workflow {
+	if source == "" {
+		source = "./workflows/default.json"
+	}
+	absPath, err := filepath.Abs(source)
+
+	file, err := os.Open(absPath)
+	if err != nil {
+		log.Panic("error:", err)
+	}
+	decoder := json.NewDecoder(file)
+	w := messages.Workflow{}
+	err = decoder.Decode(&w)
+	if err != nil {
+		log.Println("Workflow " + source + " not found")
+		log.Panic("error:", err)
+	}
+
+	return w
 }
